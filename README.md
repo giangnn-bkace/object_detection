@@ -34,3 +34,7 @@ Speed: 51ms/frame   Coco mAP: 33
 ## Object detection + voice feedback
 (based on this repo: https://github.com/jasonyip184/yolo)
 
+### English voice
+(https://youtu.be/cvu1Vgda4_w)
+
+### Japanese voice
