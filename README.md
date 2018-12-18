@@ -35,6 +35,6 @@ Speed: 51ms/frame   Coco mAP: 33
 (based on this repo: https://github.com/jasonyip184/yolo)
 
 ### English voice
-[English](https://www.youtube.com/watch?v=cvu1Vgda4_w)
+[![English](https://github.com/giangnn-bkace/object_detection/blob/master/images/youtube.png)](https://www.youtube.com/watch?v=cvu1Vgda4_w)
 
 ### Japanese voice
