@@ -2,14 +2,20 @@ import numpy as np
 import time
 import cv2
 import os
+import sys
 #import imutils
 import subprocess
 from gtts import gTTS 
 from pydub import AudioSegment
-AudioSegment.converter = "D:/Giang/DL/yolo-with-audio/ffmpeg/bin/ffmpeg.exe"
+from PIL import ImageFont, ImageDraw, Image
 
+AudioSegment.converter = "C:/Giang/DL/object_detection/ffmpeg/bin/ffmpeg.exe"
+#coding=UTF8
 # load the COCO class labels our YOLO model was trained on
-LABELS = open("coco.names").read().strip().split("\n")
+LABELS = open("coco.names", encoding="utf8").read().strip().split("\n")
+np.random.seed(42)
+COLORS = np.random.randint(0, 255, size=(len(LABELS), 3),
+	dtype="uint8")
 
 # load our YOLO object detector trained on COCO dataset (80 classes)
 print("[INFO] loading YOLO from disk...")
@@ -33,11 +39,9 @@ while True:
 	frame = cv2.flip(frame,1)
 	frames.append(frame)
 
-	if frame_count == 300:
-		break
 	if ret:
 		key = cv2.waitKey(1)
-		if frame_count % 60 == 0:
+		if frame_count % 70 == 0:
 			end = time.time()
 			# grab the frame dimensions and convert it to a blob
 			(H, W) = frame.shape[:2]
@@ -98,35 +102,68 @@ while True:
 			if len(idxs) > 0:
 				# loop over the indexes we are keeping
 				for i in idxs.flatten():
+					# extract the bounding box coordinates
+					(x, y) = (boxes[i][0], boxes[i][1])
+					(w, h) = (boxes[i][2], boxes[i][3])
+
+					# draw a bounding box rectangle and label on the frame
+					color = [int(c) for c in COLORS[classIDs[i]]]
+					cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
+					text = "{}: {:.4f}".format(LABELS[classIDs[i]],
+						confidences[i])
+					
+					#cv2.putText(frame, text, (x, y - 5),
+					#	cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+					
+					b,g,r,a = 0,255,0,0
+					fontpath ='C:/Giang/DL/object_detection/font/kosugi.ttf' # Windows10 だと C:\Windows\Fonts\ 以下にフォントがあります。
+					font = ImageFont.truetype(fontpath, 20) # フォントサイズが32
+
+					img_pil = Image.fromarray(np.asarray(frame)) # 配列の各値を8bit(1byte)整数型(0～255)をPIL Imageに変換。
+
+					draw = ImageDraw.Draw(img_pil) # drawインスタンスを生成
+
+					position = (x, y - 20) # テキスト表示位置
+					draw.text(position, text, font = font , fill = (b, g, r, a) ) # drawにテキストを記載 fill:色 BGRA (RGB)
+
+					frame = np.array(img_pil) # PIL を配列に変換
+					
+					cv2.imshow('frame',frame)
+					if cv2.waitKey(1) & 0xFF == ord('q'):
+						break
+					
 					# find positions
 					centerX, centerY = centers[i][0], centers[i][1]
 					
 					if centerX <= W/3:
-						W_pos = "left "
+						W_pos = "左 "
 					elif centerX <= (W/3 * 2):
-						W_pos = "center "
+						W_pos = "真ん中 "
 					else:
-						W_pos = "right "
+						W_pos = "右 "
 					
 					if centerY <= H/3:
-						H_pos = "top "
+						H_pos = "上 "
 					elif centerY <= (H/3 * 2):
-						H_pos = "mid "
+						H_pos = "真ん中 "
 					else:
-						H_pos = "bottom "
+						H_pos = "下 "
 
 					texts.append(H_pos + W_pos + LABELS[classIDs[i]])
 
-			print(texts)
+			print_texts = [x.encode('utf-8') for x in texts]
+			#print(print_texts)
 			
 			if texts:
 				description = ', '.join(texts)
-				tts = gTTS(description, lang='en')
+				tts = gTTS(description, lang='ja')
 				tts.save('tts.mp3')
 				tts = AudioSegment.from_mp3("tts.mp3")
 				subprocess.call(["ffplay", "-nodisp", "-autoexit", "tts.mp3"])
-
-
+			
+		cv2.imshow('frame',frame)
+		if cv2.waitKey(1) & 0xFF == ord('q'):
+			break	
 cap.release()
 cv2.destroyAllWindows()
 os.remove("tts.mp3")
