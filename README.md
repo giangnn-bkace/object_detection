@@ -1,5 +1,11 @@
 # Object detection
-## Packages:
+Using deep learning models to detect objects from webcam input
+
+## Object detection + voice feedback
+[![Demo]((https://github.com/giangnn-bkace/object_detection/blob/master/images/demo.gif)](https://youtu.be/W3x5il5w-jY))
+
+
+## Required Packages:
 - tensorflow
 - keras
 - numpy
@@ -8,7 +14,7 @@
 - pydub
 - ffmpeg
 
-## Some result
+## Some other result
 (based on this repo: https://github.com/tensorflow/models/tree/master/research/object_detection)
 
 ### ssd_inception_v2_coco model
@@ -29,7 +35,3 @@ Speed: 51ms/frame   Coco mAP: 33
 
 ![yolo](https://github.com/giangnn-bkace/object_detection/blob/master/images/yolo.gif)
 
-
-## Object detection + voice feedback
-
-[![Japanese](C:\Giang\DL\object_detection\images\y.jpg)](C:\Giang\DL\object_detection\images\japanese.mp4)
