@@ -2,7 +2,7 @@
 Using deep learning models to detect objects from webcam input
 
 ## Object detection + voice feedback
-The demo video on Youtube https://youtu.be/W3x5il5w-jY
+Please watch the demo on Youtube https://youtu.be/W3x5il5w-jY
 
 [![Demo](https://github.com/giangnn-bkace/object_detection/blob/master/images/demo.gif)](https://youtu.be/W3x5il5w-jY))
 
